@@ -1,16 +1,16 @@
 const User = require('../models/User')
+const bcrypt = require('bcryptjs')
 
 const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs');
 const {BadRequestError, UnauthenticatedError} = require('../errors/index');
 
 const register = async (req, res) => {
     const {username, password} = req.body;
+    console.log("PASS", password)
 
-    const salt = await bcrypt.genSalt(10)
     const userObject = {
         username, 
-        password: await bcrypt.hash(password, salt),
+        password,
         image: `https://i.pravatar.cc/150?img=${Math.random()*60 + 1}`
     }
     const user = await User.create(userObject);
@@ -20,7 +20,13 @@ const register = async (req, res) => {
 
 const login = async (req, res) => {
     const {username, password} = req.body;
-    if(!username || !password) throw new BadRequestError('Provide valid username and password')
+
+    if(!username) {
+        throw new BadRequestError('Login is required', ['login'])
+    }
+    if(!password) {
+        throw new BadRequestError('Password is required', ['password'])
+    }
 
     const user = await User.findOne({username});
     if(!user) {
@@ -28,6 +34,7 @@ const login = async (req, res) => {
     }
     
     const isPasswordCorrect = await bcrypt.compare(password, user.password)
+
     if(isPasswordCorrect) {
         const token = jwt.sign({id: user._id, username}, process.env.JWT_SECRET)
         return res.json({user, token})

@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-const CommentSchema = new mongoose.Schema({
+const commentSchema = new mongoose.Schema({
     content: {
         type: String,
         required: [true, 'content is required'],
@@ -23,7 +23,7 @@ const CommentSchema = new mongoose.Schema({
 },
 {timestamps: true})
 
-CommentSchema.options.toJSON = {
+commentSchema.options.toJSON = {
     transform: function(doc, ret, options) {
         ret.id = ret._id;
         delete ret._id;
@@ -32,4 +32,4 @@ CommentSchema.options.toJSON = {
     }
 };
 
-module.exports = mongoose.model("Comment", CommentSchema)
+module.exports = mongoose.model("Comment", commentSchema)

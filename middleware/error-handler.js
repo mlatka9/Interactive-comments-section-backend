@@ -1,16 +1,39 @@
 const CustomAPIError = require("../errors/custom-api")
 const {StatusCodes} = require('http-status-codes')
 
+
 const errorHandlerMiddleware = (err, req, res, next) => {
 
     if(err instanceof CustomAPIError) {
-        console.log("ERR", err)
-        return res.status(err.statusCode).json({error: err.message})
+        return res.status(err.statusCode).json({message: err.message})
     }
-    console.log(err);
+    if(err.name === 'ValidationError' ) {
+        return handleValidationError(err, res)
+    }
+    if(err.code && err.code == 11000) {
+        console.log("MAM CIE 1000")
+        return handleDuplicateKeyError(err, res);
+    }
+    console.log(err)
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({message: 'Something went wrong try again later'})
+}
 
+const handleDuplicateKeyError = (err, res) => {
+    const field = Object.keys(err.keyValue);
+    const code = StatusCodes.CONFLICT;
+    const error = `An account with that ${field} already exists.`;
+    res.status(code).send({message: error, fields: field});
+}
 
-    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({error: 'Something went wrong try again later'})
+const handleValidationError = (err, res) => {
+    let errors = Object.values(err.errors).map(el => el.message);
+    let fields = Object.values(err.errors).map(el => el.path);
+    const formattedErrors = errors.join(' ');
+    if(errors.length > 1) {
+        res.status(StatusCodes.BAD_REQUEST).send({message: formattedErrors, fields});
+     } else {
+        res.status(StatusCodes.BAD_REQUEST).send({message: formattedErrors, fields})
+     }
 }
 
 module.exports = errorHandlerMiddleware;
