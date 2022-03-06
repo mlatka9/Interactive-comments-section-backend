@@ -10,7 +10,7 @@ const createComment = async (req, res) => {
     const comment = new Comment(req.body);
     const createdComment = await comment.save();
     await Comment.populate(createdComment, { path: "user" });
-    res.json(createdComment)
+    res.status(201).json(createdComment)
 }
 
 const updateComment = async (req, res) => {
@@ -49,7 +49,7 @@ const deleteComment = async (req, res) => {
     }
 
     await Comment.findByIdAndDelete(id);
-    return res.status(200).end();
+    return res.status(204).end();
 }
 
 module.exports = {

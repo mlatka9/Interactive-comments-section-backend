@@ -6,12 +6,11 @@ const {BadRequestError, UnauthenticatedError} = require('../errors/index');
 
 const register = async (req, res) => {
     const {username, password} = req.body;
-    console.log("PASS", password)
 
     const userObject = {
         username, 
         password,
-        image: `https://i.pravatar.cc/150?img=${Math.random()*60 + 1}`
+        image: `https://i.pravatar.cc/150?img=${Math.floor(Math.random()*60 + 1)}`
     }
     const user = await User.create(userObject);
 
@@ -29,12 +28,11 @@ const login = async (req, res) => {
     }
 
     const user = await User.findOne({username});
+    
     if(!user) {
         throw new UnauthenticatedError('Provided credentials are not valid')
     }
-    
     const isPasswordCorrect = await bcrypt.compare(password, user.password)
-
     if(isPasswordCorrect) {
         const token = jwt.sign({id: user._id, username}, process.env.JWT_SECRET)
         return res.json({user, token})

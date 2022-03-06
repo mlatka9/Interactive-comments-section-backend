@@ -11,7 +11,6 @@ const errorHandlerMiddleware = (err, req, res, next) => {
         return handleValidationError(err, res)
     }
     if(err.code && err.code == 11000) {
-        console.log("MAM CIE 1000")
         return handleDuplicateKeyError(err, res);
     }
     console.log(err)
