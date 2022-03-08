@@ -5,15 +5,9 @@ It's an apllication that serves as a backend to the folowing [frontend aplicatio
 It serves Rest api which allows you to display, add, modify and delete comments. The api uses mongodb database. 
 It also supports creating user accounts. Only logged in user can create new comments.
 
-You can log in as the default user using your credentials:
-
-login: `admin`
-
-password: `123`
-
 ## How to run an application locally
 
-First you need to go to the root directory. Then in terminal type `npm install` to get dependencies. 
+First, clone the repository using `git clone` command Then you need to go to the root directory. In terminal type `npm install` to get dependencies. 
 To run the application it is necessary to provide appropriate environment variables. In the root directory create an `.env` file where you put 
 variables:
 
