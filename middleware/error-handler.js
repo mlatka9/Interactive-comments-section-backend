@@ -2,7 +2,7 @@ const CustomAPIError = require('../errors/custom-api');
 const {StatusCodes} = require('http-status-codes');
 
 
-const errorHandlerMiddleware = (err, req, res) => {
+const errorHandlerMiddleware = (err, req, res, next) => {
 
 	if(err instanceof CustomAPIError) {
 		return res.status(err.statusCode).json({message: err.message});
@@ -13,6 +13,7 @@ const errorHandlerMiddleware = (err, req, res) => {
 	if(err.code && err.code == 11000) {
 		return handleDuplicateKeyError(err, res);
 	}
+
 	console.log(err);
 	return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({message: 'Something went wrong try again later'});
 };

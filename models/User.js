@@ -15,7 +15,7 @@ const userSchema = new mongoose.Schema({
 	image: String,
 });
 
-userSchema.index({ username: 1 }, { unique: true});
+// userSchema.index({ username: 1 }, { unique: true});
 
 userSchema.pre('save', async function(next) {
 	const salt = await bcrypt.genSalt(10);

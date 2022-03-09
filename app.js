@@ -1,9 +1,9 @@
 require('dotenv').config();
 require('express-async-errors');
 
+const cors = require('cors');
 const express = require('express');
 const xss = require('xss-clean');
-const cors = require('cors');
 const helmet = require('helmet');
 
 const connectDB = require('./db/connect');
@@ -18,11 +18,10 @@ connectDB()
 		console.log('error connecting to MongoDB:', error.message);
 	});
 
-
-app.use(helmet());
-app.use(xss());
-app.use(cors());
 app.use(express.json());
+app.use(helmet());
+app.use(cors());
+app.use(xss());
 
 const commentsRoutes = require('./routes/comments');
 const authRoute = require('./routes/auth');
